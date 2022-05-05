@@ -60,3 +60,18 @@ end
 function Paddle:render()
     love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
 end
+
+--[[
+    The Paddles will have a "auto" method which should be called everytime
+    the game is started with only one player, or none in a certain time
+]]
+function Paddle:auto(ball_y, ball_dx, ball_dy)
+    desired_y = ball_y + (ball_dx * ball_dy)
+
+    if (self.y > desired_y)
+        self.dy = -PADDLE_SPEED
+    elseif (self.y < desired_y)
+        self.dy = PADDLE_SPEED
+    else
+        self.dy = 0 
+end

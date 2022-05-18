@@ -108,6 +108,10 @@ function love.load()
     -- that state in the game
     winningPlayer = 0
 
+    -- players who are in the game
+    isPlayer1Active = false
+    isPlayer2Active = false
+
     -- the state of our game; can be any of the following:
     -- 1. 'start' (the beginning of the game, before first serve)
     -- 2. 'serve' (waiting on a key press to serve the ball)
@@ -235,8 +239,10 @@ function love.update(dt)
     -- player 1
     if love.keyboard.isDown('w') then
         player1.dy = -PADDLE_SPEED
+        isPlayer1Active = true
     elseif love.keyboard.isDown('s') then
         player1.dy = PADDLE_SPEED
+        isPlayer1Active = true
     else
         player1.dy = 0
     end
@@ -244,10 +250,21 @@ function love.update(dt)
     -- player 2
     if love.keyboard.isDown('up') then
         player2.dy = -PADDLE_SPEED
+        isPlayer2Active = true
     elseif love.keyboard.isDown('down') then
         player2.dy = PADDLE_SPEED
+        isPlayer2Active = true
     else
         player2.dy = 0
+    end
+
+    -- when the game begins verify if on of the players will be a bot (or both)
+    if gameState == 'play' then
+        if ball.dx < 0 and not isPlayer1Active then -- if the ball direction is to the negative offset automove the player 1
+            player1:auto(ball.y)
+        elseif not isPlayer2Active then -- else move the player2
+            player2:auto(ball.y)
+        end
     end
 
     -- update our ball based on its DX and DY only if we're in play state;
@@ -332,6 +349,12 @@ function love.draw()
         love.graphics.printf('Press Enter to restart!', 0, 30, VIRTUAL_WIDTH, 'center')
     end
 
+    if not isPlayer1Active then
+        love.graphics.printf('Press W or S to enter the game!', 5, 21, VIRTUAL_WIDTH, 'left')
+    end
+    if not isPlayer2Active then
+        love.graphics.printf('Press UP or DOWN to enter the game!', 5, 21, VIRTUAL_WIDTH, 'right')
+    end
     -- show the score before ball is rendered so it can move over the text
     displayScore()
     

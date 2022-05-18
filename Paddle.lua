@@ -65,13 +65,12 @@ end
     The Paddles will have a "auto" method which should be called everytime
     the game is started with only one player, or none in a certain time
 ]]
-function Paddle:auto(ball_y, ball_dx, ball_dy)
-    desired_y = ball_y + (ball_dx * ball_dy)
-
-    if (self.y > desired_y)
+function Paddle:auto(ball_y)
+    if self.y > ball_y - 4 and self.y < ball_y + 4 then
+        self.dy = 0
+    elseif self.y > ball_y then
         self.dy = -PADDLE_SPEED
-    elseif (self.y < desired_y)
+    elseif self.y < ball_y then
         self.dy = PADDLE_SPEED
-    else
-        self.dy = 0 
+    end
 end
